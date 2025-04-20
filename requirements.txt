@@ -1,0 +1,6 @@
+sqlalchemy[asyncio]
+asyncpg
+alembic
+fastapi[standard]
+uvicorn
+redis
