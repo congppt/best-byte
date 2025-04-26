@@ -1,9 +1,7 @@
-from contextlib import asynccontextmanager
-
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from constants import DB_URL
-from database.models import *
+from database.models import category, spec
 
 __engine = create_async_engine(
     DB_URL,
@@ -17,7 +15,6 @@ __engine = create_async_engine(
 __session_maker = async_sessionmaker(__engine)
 
 
-@asynccontextmanager
 async def aget_session():
     session = __session_maker()
     try:

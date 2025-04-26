@@ -1,10 +1,25 @@
-from enum import StrEnum
+from enum import IntEnum,StrEnum
 
 
-class CategoryStatus(StrEnum):
-    ACTIVE = "Đang kinh doanh"
-    INACTIVE = "Ngừng kinh doanh"
+class CategoryStatus(IntEnum):
+    ACTIVE = 1
+    INACTIVE = 0
 
-class SpecType(StrEnum):
-    NUM = "Số"
-    STR = "Văn bản"
+    @property
+    def label(self):
+        return {
+            CategoryStatus.ACTIVE: "Đang kinh doanh",
+            CategoryStatus.INACTIVE: "Ngừng kinh doanh",
+        }[self]
+
+
+class SpecType(IntEnum):
+    STR = 1
+    NUM = 2
+
+    @property
+    def label(self):
+        return {
+            SpecType.STR: "Văn bản",
+            SpecType.NUM: "Số",
+        }[self]
