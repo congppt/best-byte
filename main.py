@@ -36,14 +36,10 @@ app.add_middleware(
 for router in features.routers:
     app.include_router(router, prefix="/api")
 
+
 @app.exception_handler(ValidationError)
 async def validation_exception_handler(_: Request, exc: ValidationError):
     return JSONResponse(
         status_code=422,
-        content={
-            "detail": {
-                "message": str(exc),
-                "type": "custom"
-            }
-        },
+        content={"detail": {"message": str(exc), "type": "custom"}},
     )

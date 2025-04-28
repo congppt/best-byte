@@ -16,10 +16,10 @@ async def acreate_category(request: CreateCategoryRequest, db: AsyncSession):
     used_name_query = select(Category).where(Category.name == request.name)
     used_name = await db.scalar(used_name_query)
     if used_name:
-        raise ValidationError("Danh mục đã tồn tại")
+        raise ValidationError("Category name is already used")
     # Check parent category is existed
     if request.parent_id and not await aget_existed_category(request.parent_id, db):
-        raise ValidationError("Danh mục cha không tồn tại")
+        raise ValidationError("Parent category is not existed")
     category = Category(**request.model_dump())
     db.add(category)
     await db.commit()

@@ -1,10 +1,11 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from constants import DB_URL
+from constants import DB_URL, IS_PRODUCTION
 from database.models import category, spec
 
 __engine = create_async_engine(
     DB_URL,
+    echo=not IS_PRODUCTION,
     pool_size=5,
     max_overflow=10,  # max_overflow + pool_size = max size = 15
     pool_timeout=30,

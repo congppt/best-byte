@@ -11,6 +11,7 @@ class CreateSpecRequest(BaseModel):
     units: Annotated[set[str], Field(min_length=1, max_length=5)]
     filterable: Annotated[bool, Field(...)]
 
+
 class CreateSpecResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

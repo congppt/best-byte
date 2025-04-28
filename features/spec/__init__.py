@@ -6,4 +6,10 @@ from features.spec.create.schema import CreateSpecResponse
 
 router = APIRouter(prefix="/spec", tags=["Spec"])
 
-router.add_api_route("/", acreate_spec, methods=["POST"], description="Tạo thông số kỹ thuật", response_model=CreateSpecResponse)
+router.add_api_route(
+    "/",
+    acreate_spec,
+    methods=["POST"],
+    summary="Create new specification",
+    response_model=CreateSpecResponse,
+)

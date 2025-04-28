@@ -1,11 +1,15 @@
-from fastapi import Depends
+from typing import Annotated
+from fastapi import Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from features.category.create import handler
+from features.category.list import handler
 from database import aget_session
+from features.category.list.schema import CategoryRequest
+
 
 
 async def aget_categories(
-    db: AsyncSession = Depends(aget_session)
+    request: Annotated[CategoryRequest, Query()], db: AsyncSession = Depends(aget_session)
 ):
-    pass
+    categories = await handler.aget_categories(request, db)
+    return categories

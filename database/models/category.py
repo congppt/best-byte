@@ -19,8 +19,12 @@ class Category(Entity):
         Enum(CategoryStatus, native_enum=False, validate_strings=True)
     )
 
-    parent: Mapped["Category"] = relationship(back_populates="children", remote_side=parent_id)
-    children: Mapped[set["Category"]] = relationship(back_populates="parent", remote_side=id)
+    parent: Mapped["Category"] = relationship(
+        back_populates="children", remote_side=parent_id
+    )
+    children: Mapped[set["Category"]] = relationship(
+        back_populates="parent", remote_side=id
+    )
     specs: Mapped[list["Spec"]] = relationship(
         "Spec",
         back_populates="category",
