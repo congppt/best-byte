@@ -10,19 +10,20 @@ from utils.schema import PageResponse
 router = APIRouter(prefix="/category", tags=["Category"])
 
 router.add_api_route(
-    "/",
+    "",
     acreate_category,
     methods=["POST"],
     summary="Create new category",
     response_model=CreateCategoryResponse,
 )
 router.add_api_route(
-    "/",
+    "",
     aget_categories,
     methods=["GET"],
     response_model=PageResponse[CategoryResponse],
     summary="Get all categories",
 )
+
 router.add_api_route(
     "/{id}",
     aget_category_children,
@@ -31,11 +32,13 @@ router.add_api_route(
     summary="Get category detail",
 )
 
+spec_router = APIRouter(prefix="/{category_id}/spec", tags=["Spec"])
 
-router.add_api_route(
-    "/{category_id}/spec",
+spec_router.add_api_route(
+    "",
     acreate_spec,
     methods=["POST"],
     summary="Create category's new spec",
     response_model=CreateSpecResponse,
 )
+router.include_router(spec_router)

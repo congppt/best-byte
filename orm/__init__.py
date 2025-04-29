@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from utils.schema import PageRequest, PageResponse
 
 T = TypeVar("T", bound=DeclarativeBase)
+
+
 async def apaging(query: Select[tuple], page: PageRequest, db: AsyncSession):
     """
     Executes given query and return paging result.

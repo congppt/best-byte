@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import exists, select
 from database.models.category import Category, Spec, SpecComparision
 from database.models.enum import SpecStatus
 from exception import ValidationError
@@ -17,11 +17,11 @@ async def acreate_category(request: CreateCategoryRequest, db: AsyncSession):
     if request.parent_id and not await aget_category(request.parent_id, db):
         raise ValidationError("Parent category is not existed")
     # Check category name is used
-    used_name_query = select(Category).where(Category.name == request.name)
+    used_name_query = select(exists(select(1).where(Category.name == request.name)))
     used_name = await db.scalar(used_name_query)
     if used_name:
         raise ValidationError("Category name is already used")
-    
+
     category = Category.from_dict(**request.model_dump())
     db.add(category)
     await db.commit()
@@ -35,6 +35,17 @@ async def acreate_spec(category_id: int, request: CreateSpecRequest, db: AsyncSe
         raise ValidationError("Category is not existed")
     if not category.parent_id:
         raise ValidationError("Top level category cannot have specs")
+    # Check spec name is used
+    used_label_query = select(
+        exists(select(1)).where(
+            Spec.category_id == category_id, Spec.label == request.label
+        )
+    )
+    used_label = await db.scalar(used_label_query)
+    if used_label:
+        raise ValidationError(
+            f"{category.name} already has {request.label} specification"
+        )
     spec = Spec.from_dict(**request.model_dump(), category_id=category_id)
     db.add(spec)
     if request.comparisions:

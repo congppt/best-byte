@@ -1,7 +1,12 @@
 from typing import Annotated
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 
-from database.models.enum import CategoryStatus, SpecComparisionOperator, SpecStatus, SpecType
+from database.models.enum import (
+    CategoryStatus,
+    SpecComparisionOperator,
+    SpecStatus,
+    SpecType,
+)
 
 
 class CreateCategoryRequest(BaseModel):
@@ -49,9 +54,16 @@ class CreateSpecRequest(BaseModel):
 class CreateSpecResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    class SpecComparision(BaseModel):
+        spec_id: int
+        label: str
+        category: dict[int, str]
+        operator: SpecComparisionOperator
+
     id: int
     category_id: int
     label: str
     type: SpecType
     units: set[str]
     filterable: bool
+    # comparisions: list[SpecComparision]
