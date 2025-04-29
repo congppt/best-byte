@@ -1,15 +1,15 @@
 from typing import Generic, TypeVar
 
 from sqlalchemy import asc, desc, select
-from database.models import Entity
+from sqlalchemy.orm import DeclarativeBase
 from utils.enum import FilterOption
 from utils.schema import FieldFilterCriteria, FieldPriorityCriteria, QueryRequest
 
 
-T = TypeVar("T", bound=Entity)
+T = TypeVar("T", bound=DeclarativeBase)
+
 
 class SQLAlchemyFieldFilterCriteria(FieldFilterCriteria):
-
     def to_sql_filter(self):
         column = getattr(self.entity, self.attribute)
         inner_type = column.type.python_type
@@ -31,18 +31,23 @@ class SQLAlchemyFieldFilterCriteria(FieldFilterCriteria):
             FilterOption.GTE: lambda: column >= values[0],
         }
         return operations[self.option]()
-    
-class SQLAlchemyFieldPriorityCriteria(FieldPriorityCriteria):
 
+
+class SQLAlchemyFieldPriorityCriteria(FieldPriorityCriteria):
     def to_sql_priority(self):
         priority = asc if self.asc else desc
         return priority(column=getattr(self.entity, self.attribute))
-    
+
+
 class SQLAlchemyQueryRequest(QueryRequest, Generic[T]):
     def to_sql_query(self):
-        query = select(type(T)).filter(
-            *(filter.to_sql_filter() for filter in self.resolve_filters()),
-        ).order_by(
-            *(priority.to_sql_priority() for priority in self.resolve_priorities()),
+        query = (
+            select(type(T))
+            .filter(
+                *(filter.to_sql_filter() for filter in self.resolve_filters()),
+            )
+            .order_by(
+                *(priority.to_sql_priority() for priority in self.resolve_priorities()),
+            )
         )
         return query

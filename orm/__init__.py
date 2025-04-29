@@ -1,10 +1,12 @@
 import math
+from typing import TypeVar
 from sqlalchemy import Select, func, select
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from utils.schema import PageRequest, PageResponse
 
-
+T = TypeVar("T", bound=DeclarativeBase)
 async def apaging(query: Select[tuple], page: PageRequest, db: AsyncSession):
     """
     Executes given query and return paging result.
@@ -20,4 +22,4 @@ async def apaging(query: Select[tuple], page: PageRequest, db: AsyncSession):
         items = (await db.execute(statement=page_query)).scalars().all()
     else:
         items = (await db.execute(statement=page_query)).mappings().all()
-    return PageResponse(items=items, total_pages=total_pages)
+    return PageResponse(items=items, total_pages=total_pages, total_items=count)

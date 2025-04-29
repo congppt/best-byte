@@ -8,3 +8,4 @@ DB_URL = (
 CACHE_URL = os.getenv("CACHE_URL") or "redis://localhost:6379"
 ENV = os.getenv("ENV") or "local"
 IS_PRODUCTION = ENV == "production"
+IS_LOCAL = ENV == "local"

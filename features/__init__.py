@@ -1,4 +1,4 @@
-from features import category, spec
+from features import category
 
 
-routers = (category.router, spec.router)
+routers = (category.router,)

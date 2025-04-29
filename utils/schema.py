@@ -166,6 +166,8 @@ class QueryRequest(ABC, PageRequest, FilterRequest[T], PriorityRequest[T], Gener
     def to_sql_query(self):
         pass
 
+
 class PageResponse(BaseModel, Generic[T]):
     items: Sequence[T]
     total_pages: int
+    total_items: int
