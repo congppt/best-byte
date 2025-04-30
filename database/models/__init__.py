@@ -1,8 +1,9 @@
 from sqlalchemy import MetaData, inspect
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.ext.asyncio import AsyncAttrs
 
 
-class Entity(DeclarativeBase):
+class Entity(AsyncAttrs, DeclarativeBase):
     metadata = MetaData(
         naming_convention={
             "ix": "ix_%(column_0_label)s",

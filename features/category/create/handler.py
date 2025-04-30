@@ -25,8 +25,7 @@ async def acreate_category(request: CreateCategoryRequest, db: AsyncSession):
     category = Category.from_dict(**request.model_dump())
     db.add(category)
     await db.commit()
-    await db.refresh(category)
-    return category
+    return await category.awaitable_attrs.id
 
 
 async def acreate_spec(category_id: int, request: CreateSpecRequest, db: AsyncSession):
@@ -77,5 +76,4 @@ async def acreate_spec(category_id: int, request: CreateSpecRequest, db: AsyncSe
             )
         db.add_all(spec_comparisions)
     await db.commit()
-    await db.refresh(spec)
-    return spec
+    return await spec.awaitable_attrs.id

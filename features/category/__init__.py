@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 
 from features.category.create import acreate_category, acreate_spec
-from features.category.create.schema import CreateCategoryResponse, CreateSpecResponse
 from features.category.read import aget_categories, aget_category_children
 from features.category.read.schema import CategoryResponse
 from utils.schema import PageResponse
@@ -13,8 +12,7 @@ router.add_api_route(
     "",
     acreate_category,
     methods=["POST"],
-    summary="Create new category",
-    response_model=CreateCategoryResponse,
+    summary="Create new category"
 )
 router.add_api_route(
     "",
@@ -38,7 +36,6 @@ spec_router.add_api_route(
     "",
     acreate_spec,
     methods=["POST"],
-    summary="Create category's new spec",
-    response_model=CreateSpecResponse,
+    summary="Create category's new spec"
 )
 router.include_router(spec_router)

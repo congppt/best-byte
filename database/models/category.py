@@ -69,12 +69,12 @@ class Spec(Entity):
     )
 
     category: Mapped[Category] = relationship(back_populates="specs")
-    # left_comparisions: Mapped[set[SpecComparision]] = relationship(
-    #     back_populates="right", foreign_keys=[SpecComparision.left_id]
-    # )
-    # right_comparisions: Mapped[set[SpecComparision]] = relationship(
-    #     back_populates="left", foreign_keys=[SpecComparision.right_id]
-    # )
+    left_comparisions: Mapped[set[SpecComparision]] = relationship(
+        back_populates="right", foreign_keys=[SpecComparision.right_id]
+    )
+    right_comparisions: Mapped[set[SpecComparision]] = relationship(
+        back_populates="left", foreign_keys=[SpecComparision.left_id]
+    )
 
     __table_args__ = (UniqueConstraint("category_id", "label"),)
 

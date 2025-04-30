@@ -18,16 +18,6 @@ class CreateCategoryRequest(BaseModel):
     status: Annotated[CategoryStatus, Field(default=CategoryStatus.ACTIVE)]
 
 
-class CreateCategoryResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    name: str
-    parent_id: int | None
-    icon: str | None
-    status: CategoryStatus
-
-
 class CreateSpecRequest(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
@@ -40,30 +30,11 @@ class CreateSpecRequest(BaseModel):
 
     @model_validator(mode="after")
     def validate(self):
-        if self.type == SpecType.STR:
-            if self.units:
-                raise ValueError("Units are not allowed for string type")
-            if self.comparisions:
-                raise ValueError("Comparisions are not available for string type")
+        if self.type == SpecType.STR and self.units:
+            raise ValueError("Units are not allowed for string type")
         for id in self.comparisions.keys():
             if id <= 0:
                 raise ValueError(f"Compared spec id {id} is not existed")
+            if self.type == SpecType.STR and self.comparisions[id] not in { SpecComparisionOperator.EQ, SpecComparisionOperator.NE }:
+                raise ValueError("String type only allow equals/not equals comparison")
         return self
-
-
-class CreateSpecResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    class SpecComparision(BaseModel):
-        spec_id: int
-        label: str
-        category: dict[int, str]
-        operator: SpecComparisionOperator
-
-    id: int
-    category_id: int
-    label: str
-    type: SpecType
-    units: set[str]
-    filterable: bool
-    # comparisions: list[SpecComparision]
