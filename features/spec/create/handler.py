@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.models.category import Category, Spec
 from exception import ValidationError
-from features.category.spec.create.schema import CreateSpecRequest
+from features.spec.create.schema import CreateSpecRequest
 
 
 async def aget_category(id: int, db: AsyncSession):
@@ -12,8 +12,8 @@ async def aget_category(id: int, db: AsyncSession):
     return category
 
 
-async def acreate_spec(category_id: int, request: CreateSpecRequest, db: AsyncSession):
-    category = await aget_category(category_id, db)
+async def acreate_spec(request: CreateSpecRequest, db: AsyncSession):
+    category = await aget_category(request.category_id, db)
     if not category:
         raise ValidationError("Category is not existed")
     if not category.parent_id:
@@ -21,7 +21,7 @@ async def acreate_spec(category_id: int, request: CreateSpecRequest, db: AsyncSe
     # Check spec name is used
     used_label_query = select(
         exists(select(1)).where(
-            Spec.category_id == category_id, Spec.label == request.label
+            Spec.category_id == request.category_id, Spec.label == request.label
         )
     )
     used_label = await db.scalar(used_label_query)
@@ -29,7 +29,7 @@ async def acreate_spec(category_id: int, request: CreateSpecRequest, db: AsyncSe
         raise ValidationError(
             f"{category.name} already has {request.label} specification"
         )
-    spec = Spec.from_dict(**request.model_dump(), category_id=category_id)
+    spec = Spec.from_dict(**request.model_dump())
     db.add(spec)
     await db.commit()
     return spec

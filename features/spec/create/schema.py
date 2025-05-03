@@ -7,6 +7,7 @@ from database.models.enum import SpecComparisonOperator, SpecStatus, SpecType
 class CreateSpecRequest(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
+    category_id: Annotated[int, Field(gt=0)]
     label: Annotated[str, Field(min_length=1, max_length=50)]
     type: Annotated[SpecType, Field(default=SpecType.STR)]
     units: Annotated[set[str], Field(default={}, max_length=5)]
