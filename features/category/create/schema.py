@@ -1,12 +1,7 @@
 from typing import Annotated
-from pydantic import BaseModel, Field, ConfigDict, model_validator
+from pydantic import BaseModel, Field, ConfigDict
 
-from database.models.enum import (
-    CategoryStatus,
-    SpecComparisionOperator,
-    SpecStatus,
-    SpecType,
-)
+from database.models.enum import CategoryStatus
 
 
 class CreateCategoryRequest(BaseModel):
@@ -18,23 +13,11 @@ class CreateCategoryRequest(BaseModel):
     status: Annotated[CategoryStatus, Field(default=CategoryStatus.ACTIVE)]
 
 
-class CreateSpecRequest(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True)
+class CreateCategoryResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
-    label: Annotated[str, Field(min_length=1, max_length=50)]
-    type: Annotated[SpecType, Field(default=SpecType.STR)]
-    units: Annotated[set[str], Field(default={}, max_length=5)]
-    filterable: Annotated[bool, Field(default=False)]
-    status: Annotated[SpecStatus, Field(default=SpecStatus.ACTIVE)]
-    comparisions: Annotated[dict[int, SpecComparisionOperator], Field(default={})]
-
-    @model_validator(mode="after")
-    def validate(self):
-        if self.type == SpecType.STR and self.units:
-            raise ValueError("Units are not allowed for string type")
-        for id in self.comparisions.keys():
-            if id <= 0:
-                raise ValueError(f"Compared spec id {id} is not existed")
-            if self.type == SpecType.STR and self.comparisions[id] not in { SpecComparisionOperator.EQ, SpecComparisionOperator.NE }:
-                raise ValueError("String type only allow equals/not equals comparison")
-        return self
+    id: int
+    # name: str
+    # parent_id: int | None
+    # icon: str | None
+    # status: CategoryStatus

@@ -13,7 +13,7 @@ __engine = create_async_engine(
     pool_pre_ping=True,  # Phát hiện và loại bỏ kết nối chết
 )
 
-__session_maker = async_sessionmaker(__engine)
+__session_maker = async_sessionmaker(__engine, expire_on_commit=False)
 
 
 async def aget_session():

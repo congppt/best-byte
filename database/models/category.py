@@ -12,7 +12,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, reconstructor
 from database.models import Entity
 from database.models.enum import (
     CategoryStatus,
-    SpecComparisionOperator,
+    SpecComparisonOperator,
     SpecStatus,
     SpecType,
 )
@@ -41,12 +41,12 @@ class Category(Entity):
     __table_args__ = (CheckConstraint("parent_id != id", name="self_reference"),)
 
 
-class SpecComparision(Entity):
-    __tablename__ = "spec_comparision"
+class SpecComparison(Entity):
+    __tablename__ = "spec_comparison"
     left_id: Mapped[int] = mapped_column(ForeignKey("spec.id"), primary_key=True)
     right_id: Mapped[int] = mapped_column(ForeignKey("spec.id"), primary_key=True)
-    operator: Mapped[SpecComparisionOperator] = mapped_column(
-        Enum(SpecComparisionOperator, native_enum=False, validate_strings=True)
+    operator: Mapped[SpecComparisonOperator] = mapped_column(
+        Enum(SpecComparisonOperator, native_enum=False, validate_strings=True)
     )
     left: Mapped[Spec] = relationship(foreign_keys=[left_id])
     right: Mapped[Spec] = relationship(foreign_keys=[right_id])
@@ -69,11 +69,11 @@ class Spec(Entity):
     )
 
     category: Mapped[Category] = relationship(back_populates="specs")
-    left_comparisions: Mapped[set[SpecComparision]] = relationship(
-        back_populates="right", foreign_keys=[SpecComparision.right_id]
+    left_comparisons: Mapped[set[SpecComparison]] = relationship(
+        back_populates="right", foreign_keys=[SpecComparison.right_id]
     )
-    right_comparisions: Mapped[set[SpecComparision]] = relationship(
-        back_populates="left", foreign_keys=[SpecComparision.left_id]
+    right_comparisons: Mapped[set[SpecComparison]] = relationship(
+        back_populates="left", foreign_keys=[SpecComparison.left_id]
     )
 
     __table_args__ = (UniqueConstraint("category_id", "label"),)

@@ -1,5 +1,4 @@
 from enum import IntEnum
-from typing import Any
 
 
 class CategoryStatus(IntEnum):
@@ -38,7 +37,7 @@ class SpecStatus(IntEnum):
         }[self]
 
 
-class SpecComparisionOperator(IntEnum):
+class SpecComparisonOperator(IntEnum):
     EQ = 1
     NE = 2
     GE = 3
@@ -48,8 +47,8 @@ class SpecComparisionOperator(IntEnum):
         left_val = float(left)
         right_val = float(right)
         return {
-            SpecComparisionOperator.EQ: left_val == right_val,
-            SpecComparisionOperator.NE: left_val != right_val,
-            SpecComparisionOperator.GE: left_val >= right_val,
-            SpecComparisionOperator.LE: left_val <= right_val,
+            SpecComparisonOperator.EQ: left_val == right_val,
+            SpecComparisonOperator.NE: left_val != right_val,
+            SpecComparisonOperator.GE: left_val >= right_val,
+            SpecComparisonOperator.LE: left_val <= right_val,
         }[self]
